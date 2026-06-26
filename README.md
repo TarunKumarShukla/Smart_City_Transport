@@ -86,23 +86,28 @@ lib/
 
 ### Login Screen
 
-(Add Screenshot Here)
+<img width="1080" height="2408" alt="Screenshot_20260626_223110" src="https://github.com/user-attachments/assets/0ffd359d-a6d2-46e0-94ba-e4274a7da578" />
+
 
 ### Home Screen
 
-(Add Screenshot Here)
+<img width="1080" height="2408" alt="Screenshot_20260626_223206" src="https://github.com/user-attachments/assets/30ecd5fe-330a-4d92-80bd-d15164ab8e4c" />
+
 
 ### Route Search
 
-(Add Screenshot Here)
+<img width="1080" height="2408" alt="Screenshot_20260626_223222" src="https://github.com/user-attachments/assets/60a36490-852c-4825-98aa-ad61ea41ac50" />
+
 
 ### AI Assistant
 
-(Add Screenshot Here)
+<img width="1080" height="2408" alt="Screenshot_20260626_223238" src="https://github.com/user-attachments/assets/f2b785f5-7733-4a73-bd5e-98ea2fe21687" />
+
 
 ### Admin Dashboard
 
-(Add Screenshot Here)
+<img width="1080" height="2408" alt="Screenshot_20260626_223252" src="https://github.com/user-attachments/assets/35b61fc0-eb55-4a51-83d9-d60ff5248fff" />
+
 
 ---
 
