@@ -3,7 +3,7 @@ import '../models/models.dart';
 
 class GeminiService {
   // ⚠️ REPLACE WITH YOUR ACTUAL GEMINI API KEY
-  static const _apiKey = 'AIzaSyC-5uCoo2vibi8RW0rbnpANhQ_Us12o1Jc';
+  static const _apiKey = "YOUR_API_KEY";
 
   late final GenerativeModel _model;
   late ChatSession _chat;
