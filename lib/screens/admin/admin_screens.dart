@@ -1274,72 +1274,82 @@ class AdminAnalytics extends StatelessWidget {
                         style: TextStyle(color: AppColors.textM),
                       ),
                     )
-                  : BarChart(
-                      BarChartData(
-                        alignment: BarChartAlignment.spaceAround,
-                        maxY: 600,
-                        barTouchData: BarTouchData(enabled: true),
-                        gridData: FlGridData(
-                          show: true,
-                          drawVerticalLine: false,
-                          getDrawingHorizontalLine: (_) => const FlLine(
-                            color: AppColors.border,
-                            strokeWidth: 1,
-                          ),
-                        ),
-                        borderData: FlBorderData(show: false),
-                        titlesData: FlTitlesData(
-                          rightTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          topTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          leftTitles: const AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 20,
-                              getTitlesWidget: (value, _) {
-                                if (value.toInt() % 4 == 0) {
-                                  return Text(
-                                    '${value.toInt()}h',
-                                    style: const TextStyle(
-                                      color: AppColors.textM,
-                                      fontSize: 9,
-                                    ),
-                                  );
-                                }
-                                return const SizedBox();
-                              },
+                  : Builder(builder: (ctx) {
+                      final hourly = tp.hourly;
+                      // compute maxY from data with a small headroom
+                      final maxData = hourly
+                          .map((e) => ((e['riders'] as num?)?.toDouble() ?? 0))
+                          .fold<double>(0.0, (p, n) => n > p ? n : p);
+                      final maxY = (maxData > 0) ? (maxData * 1.2) : 600.0;
+
+                      final groups = hourly.asMap().entries.map((entry) {
+                        final idx = entry.key;
+                        final e = entry.value;
+                        final h = (e['hr'] as int?) ?? 0;
+                        final r = ((e['riders'] as num?)?.toDouble()) ?? 0;
+                        final isPeak = (h >= 7 && h <= 10) || (h >= 17 && h <= 20);
+                        return BarChartGroupData(
+                          x: idx,
+                          barRods: [
+                            BarChartRodData(
+                              toY: r,
+                              width: 10,
+                              borderRadius: BorderRadius.circular(3),
+                              color: isPeak ? AppColors.amber : AppColors.adminPurple,
+                            ),
+                          ],
+                        );
+                      }).toList();
+
+                      return BarChart(
+                        BarChartData(
+                          alignment: BarChartAlignment.spaceAround,
+                          maxY: maxY,
+                          barTouchData: BarTouchData(enabled: true),
+                          gridData: FlGridData(
+                            show: true,
+                            drawVerticalLine: false,
+                            getDrawingHorizontalLine: (_) => const FlLine(
+                              color: AppColors.border,
+                              strokeWidth: 1,
                             ),
                           ),
-                        ),
-                        barGroups: tp.hourly.map((e) {
-                          final h = (e['hr'] as int?) ?? 0;
-                          final r = ((e['riders'] as num?)?.toDouble()) ?? 0;
-
-                          final isPeak =
-                              (h >= 7 && h <= 10) || (h >= 17 && h <= 20);
-
-                          return BarChartGroupData(
-                            x: h,
-                            barRods: [
-                              BarChartRodData(
-                                toY: r,
-                                width: 10,
-                                borderRadius: BorderRadius.circular(3),
-                                color: isPeak
-                                    ? AppColors.amber
-                                    : AppColors.adminPurple,
+                          borderData: FlBorderData(show: false),
+                          titlesData: FlTitlesData(
+                            rightTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            topTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            leftTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                reservedSize: 20,
+                                getTitlesWidget: (value, _) {
+                                  final i = value.toInt();
+                                  if (i >= 0 && i < hourly.length && i % 4 == 0) {
+                                    final hr = (hourly[i]['hr'] as int?) ?? 0;
+                                    return Text(
+                                      '${hr}h',
+                                      style: const TextStyle(
+                                        color: AppColors.textM,
+                                        fontSize: 9,
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox();
+                                },
                               ),
-                            ],
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                            ),
+                          ),
+                          barGroups: groups,
+                        ),
+                      );
+                    }),
             ),
           ),
 
@@ -1807,7 +1817,15 @@ class AdminProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
-    final user = auth.user!;
+    final user = auth.user;
+    if (user == null) {
+      return Scaffold(
+        backgroundColor: AppColors.bg,
+        body: const Center(
+          child: CircularProgressIndicator(color: AppColors.adminPurple),
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: CustomScrollView(

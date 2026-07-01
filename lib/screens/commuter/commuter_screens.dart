@@ -155,6 +155,10 @@ class CommuterHome extends StatelessWidget {
                   GCard(
                     accent: AppColors.cyan,
                     padding: const EdgeInsets.all(14),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const FindRoute()),
+                    ),
                     child: Row(
                       children: [
                         Container(
@@ -392,6 +396,11 @@ class _FindRouteState extends State<FindRoute>
     final tp = context.watch<TransportProvider>();
     return Scaffold(
       backgroundColor: AppColors.bg,
+      appBar: AppBar(
+        title: const Text('Find Route'),
+        leading: const BackButton(),
+        automaticallyImplyLeading: false,
+      ),
       body: SafeArea(
         child: Column(
           children: [
